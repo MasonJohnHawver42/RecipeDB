@@ -1,4 +1,4 @@
-const { makeExecutableSchema } = require('@graphql-tools/schema');
+const { makeExecutableSchema } = require('graphql-tools');
 const { readFileSync } = require('fs')
 
 const SCHEMASOURCE = "schema.graphql"
