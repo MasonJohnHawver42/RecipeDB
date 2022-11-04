@@ -1,0 +1,20 @@
+type Ingredient {
+    id : ID!
+    name: String
+}
+
+type Recipe {
+    id : ID!
+    name : String
+    ingredients : [Ingredient]
+}
+
+type Query {
+    all_ingredients: [Ingredient]
+    all_recipes: [Recipe]
+
+    ingredient(id: ID!) : Ingredient
+    recipe(id: ID!) : Recipe
+
+    message : String
+}
