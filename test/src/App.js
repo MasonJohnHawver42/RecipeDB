@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Select from 'react-select';
 
+import './App.css'
+
 const API_URL = 'http://localhost:4000/graphql';
 const INGS_QUERY = '{ all_ingredients { name, id } }';
 
 function App() {
   const [all_ingredients, setAllIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [res_ingredients, setResIngredients] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   //called when app loads
   useEffect(() => {
@@ -26,6 +31,7 @@ function App() {
     .finally(() => { setLoading(false); } ); //sets loading state
   }, []);
 
+
   //return jsx
   return (
     <div className="app">
@@ -34,7 +40,7 @@ function App() {
          <Select
            options={all_ingredients}
            isMulti
-           onChange={opt => console.log(opt)}
+           onChange={opt => setResIngredients(opt) }
          />
        </div>
     </div>
