@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Select from 'react-select';
+
+const API_URL = 'http://localhost:4000/graphql';
+const INGS_QUERY = '{ all_ingredients { name, id } }';
 
 function App() {
+  const [all_ingredients, setAllIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  //called when app loads
+  useEffect(() => {
+
+    //fetches data from api
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ query: INGS_QUERY })
+    })
+    .then(r => r.json()) //process data into json
+    .then(payload =>  {
+      let options = payload.data.all_ingredients
+      setAllIngredients(options.map(item => { return {value: item.id, label: item.name} } ) ); //sets our state
+    })
+    .catch (error => { console.error("An error occurred: ", error); } ) //catches errors
+    .finally(() => { setLoading(false); } ); //sets loading state
+  }, []);
+
+  //return jsx
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1> Kitchen </h1>
+        <div className='search'>
+         <Select
+           options={all_ingredients}
+           isMulti
+           onChange={opt => console.log(opt)}
+         />
+       </div>
     </div>
   );
 }

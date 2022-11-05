@@ -12,7 +12,7 @@ var resolvers = {
     all_ingredients: (root, args, ctx, info) => {
         return new Promise((resolve, reject) => {
             ctx.db.all("SELECT ingredient_id as id, name FROM ingredients;", function (err, rows) {
-                if (err) { reject([]); }addResolversToSchema({ schema, resolvers })
+                if (err) { reject([]); }
                 resolve(rows);
             });
         });
