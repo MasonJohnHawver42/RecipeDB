@@ -9,9 +9,18 @@ type Recipe {
     ingredients : [Ingredient]
 }
 
+type Debug {
+  id : ID!
+  name : String
+  cnt : Int
+}
+
 type Query {
     all_ingredients: [Ingredient]
     all_recipes: [Recipe]
+
+    complete_recipes(ing_ids: [ID]): [Recipe]
+    sorted_recipes(ing_ids: [ID]): [Recipe]
 
     ingredient(id: ID!) : Ingredient
     recipe(id: ID!) : Recipe
