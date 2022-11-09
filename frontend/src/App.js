@@ -44,7 +44,7 @@ function App() {
   //return jsx
   return (
     <div className="app">
-      <h1> Kitchen </h1>
+      <h1> Goldies Kitchen </h1>
         <div className='search'>
          <Select
            options={all_ingredients}
