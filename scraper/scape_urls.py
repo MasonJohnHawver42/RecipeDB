@@ -1,35 +1,64 @@
 from recipe_scrapers import scrape_me
-
-# entry point
-scraper = scrape_me('https://www.allrecipes.com/recipe/158968/spinach-and-feta-turkey-burgers/')
+import pickle
 
 url_set = set([])
+leaf_set = set(['https://www.allrecipes.com/recipe/158968/spinach-and-feta-turkey-burgers/']) #to be explored
 black_list = set([])
 
-def search(node):
-    if (node):
-        url_set.add(node)
+def load(fn):
+    global url_set, leaf_set, black_list
+    with open(fn, "rb") as f: # "rb" because we want to read in binary mode
+        (url_set, leaf_set, black_list) = pickle.load(f)
 
-        links = scraper.links()
-        for i in range(len(links)):
-            link = links[i]["href"]
-            if link[:35] == "https://www.allrecipes.com/recipes/":
-                search(scrape_me(``))
+def save(fn):
+    global url_set, leaf_set, black_list
+    with open(fn, "wb") as f:
+        pickle.dump((url_set, leaf_set, black_list), f)
 
+def make_txt(fn):
+    global url_set, leaf_set, black_list
 
-print(scraper.title())
-scraper.total_time()
-scraper.yields()
-print(scraper.ingredients())
-print(scraper.instructions())  # or alternatively for results as a Python list: scraper.instructions_list()
-print(scraper.image())
-scraper.host()
+    f = open(fn, "w")
+    for url in url_set:
+        f.write(url + "\n")
 
-links = scraper.links()
+    f.close()
 
-for i in range(len(links)):
-    link = links[i]["href"]
-    if link[:35] == "https://www.allrecipes.com/recipes/":
-        print(link)
+def search():
+    global url_set, leaf_set, black_list
 
-scraper.nutrients()  # if available
+    new_leafs = set([])
+    for leaf in leaf_set:
+        data = scrape_me(leaf)
+        if data is not None:
+            url_set.add(leaf)
+            for a_tag in data.links():
+                child_url = a_tag["href"]
+                if child_url not in leaf_set and child_url not in url_set and child_url not in black_list and child_url[:34] == "https://www.allrecipes.com/recipe/":
+                    new_leafs.add(child_url)
+        else:
+            black_list.add(leaf)
+
+    return new_leafs
+
+load("urls.bin")
+
+print("Batch 0")
+print("Searched:", len(url_set))
+print("Explore:", len(leaf_set))
+
+i = 0
+while input("cont [y/n]").strip().lower() == "y":
+    leaf_set = search()
+    i += 1
+
+    print("Batch", i)
+    print("Searched:", len(url_set))
+    print("Explore:", len(leaf_set))
+
+print("Done")
+
+save("urls.bin")
+make_txt("urls.txt")
+
+print(url_set)
