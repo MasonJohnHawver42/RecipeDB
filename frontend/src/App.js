@@ -16,7 +16,6 @@ function App() {
 
   //called when app loads
   useEffect(() => {
-
     //fetches data from api
     fetch(API_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -49,7 +48,7 @@ function App() {
          <Select
            options={all_ingredients}
            isMulti
-           onChange={opt => setResIngredients(new Set(opt.map(item => item.value))) }
+           onChange={opt => { console.log("changed"); return setResIngredients(new Set(opt.map(item => item.value)))} }
          />
        </div>
        {recipes?.length > 0 ? (
@@ -61,7 +60,7 @@ function App() {
             />
           ))}
          </div>
-       ) : (<p>None</p>)}
+       ) : (<p>No Recipes</p>)}
     </div>
   );
 }
